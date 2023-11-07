@@ -28,6 +28,11 @@ public sealed class FunctionView
     public string Description { get; set; } = string.Empty;
 
     /// <summary>
+    /// Function output.
+    /// </summary>
+    public Output Output { get; set; } = new Output();
+
+    /// <summary>
     /// Whether the delegate points to a semantic function
     /// </summary>
     public bool IsSemantic { get; set; }
@@ -55,6 +60,7 @@ public sealed class FunctionView
     /// <param name="name">Function name</param>
     /// <param name="skillName">Skill name, e.g. the function namespace</param>
     /// <param name="description">Function description</param>
+    /// <param name="output">SK function output return</param>
     /// <param name="parameters">List of function parameters provided by the skill developer</param>
     /// <param name="isSemantic">Whether the function is a semantic one (or native is False)</param>
     /// <param name="isAsynchronous">Whether the function is async. Note: all semantic functions are async.</param>
@@ -62,6 +68,7 @@ public sealed class FunctionView
         string name,
         string skillName,
         string description,
+        Output output,
         IList<ParameterView> parameters,
         bool isSemantic,
         bool isAsynchronous = true)
@@ -69,6 +76,7 @@ public sealed class FunctionView
         this.Name = name;
         this.SkillName = skillName;
         this.Description = description;
+        this.Output = output;
         this.Parameters = parameters;
         this.IsSemantic = isSemantic;
         this.IsAsynchronous = isAsynchronous;

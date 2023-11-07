@@ -76,6 +76,10 @@ public sealed class Plan : IPlan
     public string Description { get; set; } = string.Empty;
 
     /// <inheritdoc/>
+    [JsonPropertyName("output")]
+    public Output Output { get; set; } = new Output();
+
+    /// <inheritdoc/>
     [JsonIgnore]
     public bool IsSemantic { get; private set; }
 
@@ -573,6 +577,7 @@ public sealed class Plan : IPlan
         this.Name = function.Name;
         this.SkillName = function.SkillName;
         this.Description = function.Description;
+        this.Output = function.Output;
         this.IsSemantic = function.IsSemantic;
         this.RequestSettings = function.RequestSettings;
     }

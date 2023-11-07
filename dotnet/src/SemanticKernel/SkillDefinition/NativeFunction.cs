@@ -41,6 +41,9 @@ internal sealed class NativeFunction : ISKFunction, IDisposable
     public string Description { get; }
 
     /// <inheritdoc/>
+    public Output Output { get; }
+
+    /// <inheritdoc/>
     public bool IsSemantic { get; } = false;
 
     /// <inheritdoc/>
@@ -85,6 +88,9 @@ internal sealed class NativeFunction : ISKFunction, IDisposable
             skillName: skillName!,
             functionName: methodDetails.Name,
             description: methodDetails.Description,
+            output: new Output(methodDetails.OutputDetails.Type,
+                                methodDetails.OutputDetails.Range,
+                                methodDetails.OutputDetails.Description),
             logger: logger);
     }
 
@@ -95,6 +101,7 @@ internal sealed class NativeFunction : ISKFunction, IDisposable
     /// <param name="skillName">SK skill name</param>
     /// <param name="functionName">SK function name</param>
     /// <param name="description">SK function description</param>
+    /// <param name="output">SK function output</param>
     /// <param name="parameters">SK function parameters</param>
     /// <param name="loggerFactory">The <see cref="ILoggerFactory"/> to use for logging. If null, no logging will be performed.</param>
     /// <returns>SK function instance</returns>
@@ -103,6 +110,7 @@ internal sealed class NativeFunction : ISKFunction, IDisposable
         string? skillName = null,
         string? functionName = null,
         string? description = null,
+        Output? output = null,
         IEnumerable<ParameterView>? parameters = null,
         ILoggerFactory? loggerFactory = null)
     {
@@ -113,6 +121,9 @@ internal sealed class NativeFunction : ISKFunction, IDisposable
         functionName ??= methodDetails.Name;
         parameters ??= methodDetails.Parameters;
         description ??= methodDetails.Description;
+        output ??= new Output(methodDetails.OutputDetails.Type,
+                            methodDetails.OutputDetails.Range,
+                            methodDetails.OutputDetails.Description);
 
         if (string.IsNullOrWhiteSpace(skillName))
         {
@@ -122,9 +133,10 @@ internal sealed class NativeFunction : ISKFunction, IDisposable
         return new NativeFunction(
             delegateFunction: methodDetails.Function,
             parameters: parameters is not null ? parameters.ToList() : (IList<ParameterView>)Array.Empty<ParameterView>(),
-            description: description,
             skillName: skillName!,
             functionName: functionName,
+            description: description,
+            output: output,
             logger: logger);
     }
 
@@ -137,6 +149,7 @@ internal sealed class NativeFunction : ISKFunction, IDisposable
             Name = this.Name,
             SkillName = this.SkillName,
             Description = this.Description,
+            Output = this.Output,
             Parameters = this.Parameters,
         };
     }
@@ -208,12 +221,21 @@ internal sealed class NativeFunction : ISKFunction, IDisposable
     private Func<ITextCompletion?, CompleteRequestSettings?, SKContext, CancellationToken, Task<SKContext>> _function;
     private readonly ILogger _logger;
 
+    private struct OutputDetails
+    {
+        public string Type { get; set; }
+        public string Range { get; set; }
+        public string Description { get; set; }
+    }
+
     private struct MethodDetails
     {
         public Func<ITextCompletion?, CompleteRequestSettings?, SKContext, CancellationToken, Task<SKContext>> Function { get; set; }
         public List<ParameterView> Parameters { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+
+        public OutputDetails OutputDetails { get; set; }
     }
 
     private static async Task<string> GetCompletionsResultContentAsync(IReadOnlyList<ITextResult> completions, CancellationToken cancellationToken = default)
@@ -228,6 +250,7 @@ internal sealed class NativeFunction : ISKFunction, IDisposable
         string skillName,
         string functionName,
         string description,
+        Output output,
         ILogger logger)
     {
         Verify.NotNull(delegateFunction);
@@ -243,6 +266,7 @@ internal sealed class NativeFunction : ISKFunction, IDisposable
         this.Name = functionName;
         this.SkillName = skillName;
         this.Description = description;
+        this.Output = output;
     }
 
     /// <summary>
@@ -285,10 +309,24 @@ internal sealed class NativeFunction : ISKFunction, IDisposable
 
         string? description = method.GetCustomAttribute<DescriptionAttribute>(inherit: true)?.Description;
 
+        string? outputType = method.GetCustomAttribute<SKOutputAttribute> (inherit: true)?.Type;
+
+        string? outputRange = method.GetCustomAttribute<SKOutputAttribute>(inherit: true)?.Range;
+
+        string? outputDescription = method.GetCustomAttribute<SKOutputAttribute>(inherit: true)?.Description;
+
+        var output = new OutputDetails
+        {
+            Type = outputType ?? string.Empty,
+            Range = outputRange ?? string.Empty,
+            Description = outputDescription ?? string.Empty,
+        };
+
         var result = new MethodDetails
         {
             Name = functionName!,
             Description = description ?? string.Empty,
+            OutputDetails = output,
         };
 
         (result.Function, result.Parameters) = GetDelegateInfo(target, method);

@@ -28,6 +28,9 @@ public sealed class InstrumentedPlan : IPlan
     public string Description => this._plan.Description;
 
     /// <inheritdoc/>
+    public Output Output => this._plan.Output;
+
+    /// <inheritdoc/>
     public bool IsSemantic => this._plan.IsSemantic;
 
     /// <inheritdoc/>

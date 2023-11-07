@@ -107,6 +107,20 @@ public class PromptTemplateConfig
     }
 
     /// <summary>
+    /// Output parameter for semantic functions.
+    /// </summary>
+    public class OutputParameter
+    {
+        [JsonPropertyName("output")]
+        [JsonPropertyOrder(1)]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+
+        public string Type { get; set; } = string.Empty;
+        public string Range { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+    }
+
+    /// <summary>
     /// Schema - Not currently used.
     /// </summary>
     [JsonPropertyName("schema")]
@@ -151,6 +165,14 @@ public class PromptTemplateConfig
     [JsonPropertyOrder(6)]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public InputConfig Input { get; set; } = new();
+
+    /// <summary>
+    /// Output parameter for semantic functions.
+    /// </summary>
+    [JsonPropertyName("output")]
+    [JsonPropertyOrder(7)]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public OutputParameter Output { get; set; } = new();
 
     /// <summary>
     /// Remove some default properties to reduce the JSON complexity.

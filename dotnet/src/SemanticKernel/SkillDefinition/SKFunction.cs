@@ -38,6 +38,7 @@ public static class SKFunction
     /// <param name="skillName">SK skill name</param>
     /// <param name="functionName">SK function name</param>
     /// <param name="description">SK function description</param>
+    /// <param name="output">SK function output</param>
     /// <param name="parameters">SK function parameters</param>
     /// <param name="loggerFactory">The <see cref="ILoggerFactory"/> to use for logging. If null, no logging will be performed.</param>
     /// <returns>SK function instance</returns>
@@ -46,9 +47,10 @@ public static class SKFunction
         string? skillName = null,
         string? functionName = null,
         string? description = null,
+        Output? output = null,
         IEnumerable<ParameterView>? parameters = null,
         ILoggerFactory? loggerFactory = null)
-            => NativeFunction.FromNativeFunction(nativeFunction, skillName, functionName, description, parameters, loggerFactory);
+            => NativeFunction.FromNativeFunction(nativeFunction, skillName, functionName, description, output, parameters, loggerFactory);
 
     /// <summary>
     /// Create a native function instance, given a semantic function configuration.

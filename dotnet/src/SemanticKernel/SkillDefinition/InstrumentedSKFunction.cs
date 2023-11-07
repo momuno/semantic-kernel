@@ -27,6 +27,9 @@ public sealed class InstrumentedSKFunction : ISKFunction
     public string Description => this._function.Description;
 
     /// <inheritdoc/>
+    public Output Output => this._function.Output;
+
+    /// <inheritdoc/>
     public bool IsSemantic => this._function.IsSemantic;
 
     /// <inheritdoc/>

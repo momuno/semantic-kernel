@@ -34,6 +34,9 @@ internal sealed class SemanticFunction : ISKFunction, IDisposable
     public string Description { get; }
 
     /// <inheritdoc/>
+    public Output Output { get; }
+
+    /// <inheritdoc/>
     public bool IsSemantic => true;
 
     /// <inheritdoc/>
@@ -67,6 +70,9 @@ internal sealed class SemanticFunction : ISKFunction, IDisposable
             description: functionConfig.PromptTemplateConfig.Description,
             skillName: skillName,
             functionName: functionName,
+            output: new Output(functionConfig.PromptTemplateConfig.Output.Type,
+                                functionConfig.PromptTemplateConfig.Output.Range,
+                                functionConfig.PromptTemplateConfig.Output.Description),
             loggerFactory: loggerFactory
         );
 
@@ -82,6 +88,7 @@ internal sealed class SemanticFunction : ISKFunction, IDisposable
             Name = this.Name,
             SkillName = this.SkillName,
             Description = this.Description,
+            Output = this.Output,
             Parameters = this.Parameters,
         };
     }
@@ -148,6 +155,7 @@ internal sealed class SemanticFunction : ISKFunction, IDisposable
         string skillName,
         string functionName,
         string description,
+        Output output,
         ILoggerFactory? loggerFactory = null)
     {
         Verify.NotNull(template);
@@ -163,6 +171,7 @@ internal sealed class SemanticFunction : ISKFunction, IDisposable
         this.Name = functionName;
         this.SkillName = skillName;
         this.Description = description;
+        this.Output = output;
     }
 
     #region private
