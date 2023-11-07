@@ -47,7 +47,7 @@ public static class SKFunction
         string? skillName = null,
         string? functionName = null,
         string? description = null,
-        Output? output = null,
+        OutputView? output = null,
         IEnumerable<ParameterView>? parameters = null,
         ILoggerFactory? loggerFactory = null)
             => NativeFunction.FromNativeFunction(nativeFunction, skillName, functionName, description, output, parameters, loggerFactory);

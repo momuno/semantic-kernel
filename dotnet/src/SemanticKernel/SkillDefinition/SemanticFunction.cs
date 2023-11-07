@@ -34,9 +34,6 @@ internal sealed class SemanticFunction : ISKFunction, IDisposable
     public string Description { get; }
 
     /// <inheritdoc/>
-    public Output Output { get; }
-
-    /// <inheritdoc/>
     public bool IsSemantic => true;
 
     /// <inheritdoc/>
@@ -46,6 +43,12 @@ internal sealed class SemanticFunction : ISKFunction, IDisposable
     /// List of function parameters
     /// </summary>
     public IList<ParameterView> Parameters { get; }
+
+    /// <summary>
+    /// Function output
+    /// </summary
+    public OutputView Output { get; }
+
 
     /// <summary>
     /// Create a native function instance, given a semantic function configuration.
@@ -70,7 +73,7 @@ internal sealed class SemanticFunction : ISKFunction, IDisposable
             description: functionConfig.PromptTemplateConfig.Description,
             skillName: skillName,
             functionName: functionName,
-            output: new Output(functionConfig.PromptTemplateConfig.Output.Type,
+            output: new OutputView(functionConfig.PromptTemplateConfig.Output.Type,
                                 functionConfig.PromptTemplateConfig.Output.Range,
                                 functionConfig.PromptTemplateConfig.Output.Description),
             loggerFactory: loggerFactory
@@ -155,7 +158,7 @@ internal sealed class SemanticFunction : ISKFunction, IDisposable
         string skillName,
         string functionName,
         string description,
-        Output output,
+        OutputView output,
         ILoggerFactory? loggerFactory = null)
     {
         Verify.NotNull(template);

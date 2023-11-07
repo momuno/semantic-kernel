@@ -41,9 +41,6 @@ internal sealed class NativeFunction : ISKFunction, IDisposable
     public string Description { get; }
 
     /// <inheritdoc/>
-    public Output Output { get; }
-
-    /// <inheritdoc/>
     public bool IsSemantic { get; } = false;
 
     /// <inheritdoc/>
@@ -53,6 +50,11 @@ internal sealed class NativeFunction : ISKFunction, IDisposable
     /// List of function parameters
     /// </summary>
     public IList<ParameterView> Parameters { get; }
+
+    /// <summary>
+    /// Function output
+    /// </summary
+    public OutputView Output { get; }
 
     /// <summary>
     /// Create a native function instance, wrapping a native object method
@@ -88,7 +90,7 @@ internal sealed class NativeFunction : ISKFunction, IDisposable
             skillName: skillName!,
             functionName: methodDetails.Name,
             description: methodDetails.Description,
-            output: new Output(methodDetails.OutputDetails.Type,
+            output: new OutputView(methodDetails.OutputDetails.Type,
                                 methodDetails.OutputDetails.Range,
                                 methodDetails.OutputDetails.Description),
             logger: logger);
@@ -110,7 +112,7 @@ internal sealed class NativeFunction : ISKFunction, IDisposable
         string? skillName = null,
         string? functionName = null,
         string? description = null,
-        Output? output = null,
+        OutputView? output = null,
         IEnumerable<ParameterView>? parameters = null,
         ILoggerFactory? loggerFactory = null)
     {
@@ -121,7 +123,7 @@ internal sealed class NativeFunction : ISKFunction, IDisposable
         functionName ??= methodDetails.Name;
         parameters ??= methodDetails.Parameters;
         description ??= methodDetails.Description;
-        output ??= new Output(methodDetails.OutputDetails.Type,
+        output ??= new OutputView(methodDetails.OutputDetails.Type,
                             methodDetails.OutputDetails.Range,
                             methodDetails.OutputDetails.Description);
 
@@ -250,7 +252,7 @@ internal sealed class NativeFunction : ISKFunction, IDisposable
         string skillName,
         string functionName,
         string description,
-        Output output,
+        OutputView output,
         ILogger logger)
     {
         Verify.NotNull(delegateFunction);

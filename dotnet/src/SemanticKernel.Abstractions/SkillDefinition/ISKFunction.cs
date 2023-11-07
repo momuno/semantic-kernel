@@ -29,11 +29,6 @@ public interface ISKFunction
     string Description { get; }
 
     /// <summary>
-    /// Function output.
-    /// </summary>
-    Output Output { get; }
-
-    /// <summary>
     /// Whether the function is defined using a prompt template.
     /// IMPORTANT: native functions might use semantic functions internally,
     /// so when this property is False, executing the function might still involve AI calls.
@@ -86,32 +81,3 @@ public interface ISKFunction
     /// <returns>Self instance</returns>
     ISKFunction SetAIConfiguration(CompleteRequestSettings settings);
 }
-
-public class Output
-{
-    /// <summary>
-    /// Function output return type. The return type is to be used in prompt templates.
-    /// </summary>
-    public string Type { get; } = string.Empty;
-
-    /// <summary>
-    /// Function output return range of values. This can be qualitative or quantitative, specifying what is included and what is excluded. The return value range is to be used in prompt templates.
-    /// </summary>
-    public string Range { get; } = string.Empty;
-
-    /// <summary>
-    /// Function output description. Any other information about the returned output not covered by outputType or outputRange. The description is to be used in prompt templates.
-    /// </summary>
-    public string Description { get; } = string.Empty;
-
-    internal Output()
-    {
-    }
-
-    internal Output(string type, string range, string description)
-    {
-        this.Type = type;
-        this.Range = range;
-        this.Description = description;
-    }
-};

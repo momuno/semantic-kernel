@@ -30,7 +30,7 @@ public sealed class FunctionView
     /// <summary>
     /// Function output.
     /// </summary>
-    public Output Output { get; set; } = new Output();
+    public OutputView Output { get; set; } = new OutputView();
 
     /// <summary>
     /// Whether the delegate points to a semantic function
@@ -68,7 +68,7 @@ public sealed class FunctionView
         string name,
         string skillName,
         string description,
-        Output output,
+        OutputView output,
         IList<ParameterView> parameters,
         bool isSemantic,
         bool isAsynchronous = true)
