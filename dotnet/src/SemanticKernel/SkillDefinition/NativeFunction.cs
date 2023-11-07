@@ -90,9 +90,7 @@ internal sealed class NativeFunction : ISKFunction, IDisposable
             skillName: skillName!,
             functionName: methodDetails.Name,
             description: methodDetails.Description,
-            output: new OutputView(methodDetails.OutputDetails.Type,
-                                methodDetails.OutputDetails.Range,
-                                methodDetails.OutputDetails.Description),
+            output: methodDetails.Output,
             logger: logger);
     }
 
@@ -123,9 +121,7 @@ internal sealed class NativeFunction : ISKFunction, IDisposable
         functionName ??= methodDetails.Name;
         parameters ??= methodDetails.Parameters;
         description ??= methodDetails.Description;
-        output ??= new OutputView(methodDetails.OutputDetails.Type,
-                            methodDetails.OutputDetails.Range,
-                            methodDetails.OutputDetails.Description);
+        output ??= methodDetails.Output;
 
         if (string.IsNullOrWhiteSpace(skillName))
         {
@@ -135,9 +131,9 @@ internal sealed class NativeFunction : ISKFunction, IDisposable
         return new NativeFunction(
             delegateFunction: methodDetails.Function,
             parameters: parameters is not null ? parameters.ToList() : (IList<ParameterView>)Array.Empty<ParameterView>(),
+            description: description,
             skillName: skillName!,
             functionName: functionName,
-            description: description,
             output: output,
             logger: logger);
     }
@@ -223,21 +219,13 @@ internal sealed class NativeFunction : ISKFunction, IDisposable
     private Func<ITextCompletion?, CompleteRequestSettings?, SKContext, CancellationToken, Task<SKContext>> _function;
     private readonly ILogger _logger;
 
-    private struct OutputDetails
-    {
-        public string Type { get; set; }
-        public string Range { get; set; }
-        public string Description { get; set; }
-    }
-
     private struct MethodDetails
     {
         public Func<ITextCompletion?, CompleteRequestSettings?, SKContext, CancellationToken, Task<SKContext>> Function { get; set; }
         public List<ParameterView> Parameters { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-
-        public OutputDetails OutputDetails { get; set; }
+        public OutputView Output { get; set; }
     }
 
     private static async Task<string> GetCompletionsResultContentAsync(IReadOnlyList<ITextResult> completions, CancellationToken cancellationToken = default)
@@ -317,18 +305,15 @@ internal sealed class NativeFunction : ISKFunction, IDisposable
 
         string? outputDescription = method.GetCustomAttribute<SKOutputAttribute>(inherit: true)?.Description;
 
-        var output = new OutputDetails
-        {
-            Type = outputType ?? string.Empty,
-            Range = outputRange ?? string.Empty,
-            Description = outputDescription ?? string.Empty,
-        };
+        var output = new OutputView(outputType ?? string.Empty,
+                                    outputRange ?? string.Empty,
+                                    outputDescription ?? string.Empty);
 
         var result = new MethodDetails
         {
             Name = functionName!,
             Description = description ?? string.Empty,
-            OutputDetails = output,
+            Output = output,
         };
 
         (result.Function, result.Parameters) = GetDelegateInfo(target, method);

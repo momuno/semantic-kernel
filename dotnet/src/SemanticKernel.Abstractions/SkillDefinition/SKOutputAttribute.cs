@@ -17,6 +17,7 @@ public sealed class SKOutputAttribute : Attribute
     /// Initializes the attribute with its (native function return) type and semantic description.
     /// </summary>
     /// <param type="type">The type of output.</param>
+    /// <param range="reange">The range out output included and excluded.</param>
     /// <param description="description">The semantic description of the output.</param>
     public SKOutputAttribute(string type, string range, string description)
     {

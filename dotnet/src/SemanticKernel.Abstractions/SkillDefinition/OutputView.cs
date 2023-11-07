@@ -45,4 +45,4 @@ public sealed class OutputView
         this.Range = range;
         this.Description = description;
     }
-};
+}
